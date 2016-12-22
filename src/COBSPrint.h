@@ -1,12 +1,6 @@
-#include "Print.h"
+#pragma once
 
-class PacketPrint : public Print {
-    // complete the current packet
-    virtual bool end() = 0;
-
-    // abort and flush the current packet, preferably invalidating it if possible
-    virtual void abort() = 0;
-};
+#include "PacketIO.h"
 
 class COBSPrint : public PacketPrint
 {
