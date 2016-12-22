@@ -1,13 +1,14 @@
 #ifdef ARDUINO
   #include <Stream.h>
 #else
+  #ifndef Stream_H
+  #define Stream_H
+
   inline int millis() {
     static int val = 0;
     return val += 500;
   }
 
-  #ifndef Stream_H
-  #define Stream_H
   #include <string.h>
   #include "Print.h"
   class Stream : Print

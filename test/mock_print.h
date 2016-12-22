@@ -53,6 +53,10 @@ public:
 	virtual void flush() override {
 		_index = _src.get_len();
 	}
+
+private:
+	size_t write(uint8_t) { return 0; }
+	size_t write(const uint8_t*, size_t) { return 0; }
 };
 
 class MockPrint : public Print, public MockBuffer {
@@ -157,5 +161,9 @@ public:
 	virtual void flush() {
 		return _base.flush();
 	}
+
+private:
+	size_t write(uint8_t) { return 0; }
+	size_t write(const uint8_t*, size_t) { return 0; }
 };
 #endif
