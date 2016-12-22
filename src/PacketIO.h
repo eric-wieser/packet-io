@@ -15,9 +15,6 @@ public:
 
 class PacketStream : public Stream {
 public:
-    // call when finished parsing the current packet. Returns true if the packet was valid
-    virtual bool done() = 0;
-
     // move onto the next packet. read() will return eof until then
     virtual bool next() = 0;
 

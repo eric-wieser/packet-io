@@ -145,7 +145,6 @@ public:
             _skip_to_end = true;
         return true;
     }
-    virtual bool done() { return _packet_done; }
 private:
     size_t write(uint8_t) { return 0; }
     size_t write(const uint8_t*, size_t) { return 0; }
