@@ -4,8 +4,10 @@
 #include "mock_print.h"
 #include "COBSPrint.h"
 
+static MockABuffer<20> short_buf;
+
 void test_cobs_basic(void) {
-    MockPrint<> mp;
+    MockPrint mp(short_buf);
     COBSPrint p(mp);
 
     size_t n = 4;
@@ -16,7 +18,7 @@ void test_cobs_basic(void) {
 }
 
 void test_cobs_basic0(void) {
-    MockPrint<> mp;
+    MockPrint mp(short_buf);
     COBSPrint p(mp);
 
     size_t n = 5;
@@ -27,7 +29,7 @@ void test_cobs_basic0(void) {
 }
 
 void test_cobs_piecewise(void) {
-    MockPrint<> mp;
+    MockPrint mp(short_buf);
     COBSPrint p(mp);
 
     p.write("123");
@@ -38,7 +40,7 @@ void test_cobs_piecewise(void) {
 }
 
 void test_cobs_piecewise0(void) {
-    MockPrint<> mp;
+    MockPrint mp(short_buf);
     COBSPrint p(mp);
 
     TEST_ASSERT_EQUAL(3, p.write("12\x00", 3));
@@ -50,8 +52,9 @@ void test_cobs_piecewise0(void) {
 
 void test_cobs_interrupted() {
     const size_t fail_on[] = {0, 3, 6, 7};
-    FailingMockPrint<15> mp(fail_on);
-    COBSPrint p(mp);
+    MockPrint mp(short_buf);
+    FailingPrint fmp(mp, fail_on);
+    COBSPrint p(fmp);
 
     write_retry(p, "1234", 4);
     while(!p.end());
@@ -61,8 +64,9 @@ void test_cobs_interrupted() {
 
 void test_cobs_interrupted0() {
     const size_t fail_on[] = {0, 3, 6, 7};
-    FailingMockPrint<15> mp(fail_on);
-    COBSPrint p(mp);
+    MockPrint mp(short_buf);
+    FailingPrint fmp(mp, fail_on);
+    COBSPrint p(fmp);
 
     write_retry(p, "12\x00""34", 5);
     while(!p.end());
@@ -76,8 +80,9 @@ void test_cobs_interrupted_many() {
     for(size_t k = j; k < 6; k++)
     {
         const size_t fail_on[] = {i, j, k};
-        FailingMockPrint<15> mp(fail_on);
-        COBSPrint p(mp);
+        MockPrint mp(short_buf);
+        FailingPrint fmp(mp, fail_on);
+        COBSPrint p(fmp);
 
         write_retry(p, "1234", 4);
         while(!p.end());
