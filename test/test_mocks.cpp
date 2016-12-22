@@ -36,7 +36,7 @@ void test_failing_mock_write_fixed() {
     MockPrint mp(short_buf);
     FailingPrint fmp(mp, fail_on);
 
-    write_retry(fmp, "0123456789", 10);
+    write_retry(fmp, "0123456789");
     TEST_ASSERT_EQUAL_STREAM("0123456789", mp);
 }
 

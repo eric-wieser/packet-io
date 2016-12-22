@@ -21,8 +21,7 @@ void test_cobs_basic0(void) {
     MockPrint mp(short_buf);
     COBSPrint p(mp);
 
-    size_t n = 5;
-    TEST_ASSERT_EQUAL(n, p.write("12\x00""34", n));
+    TEST_ASSERT_EQUAL(5, write(p, "12\x00""34"));
     TEST_ASSERT(p.end());
 
     TEST_ASSERT_EQUAL_STREAM("\x03""12\x03""34\x00", mp);
@@ -43,8 +42,8 @@ void test_cobs_piecewise0(void) {
     MockPrint mp(short_buf);
     COBSPrint p(mp);
 
-    TEST_ASSERT_EQUAL(3, p.write("12\x00", 3));
-    TEST_ASSERT_EQUAL(2, p.write("34", 2));
+    TEST_ASSERT_EQUAL(3, write(p, "12\x00"));
+    TEST_ASSERT_EQUAL(2, write(p, "34"));
     TEST_ASSERT(p.end());
 
     TEST_ASSERT_EQUAL_STREAM("\x03""12\x03""34\x00", mp);
@@ -56,7 +55,7 @@ void test_cobs_interrupted() {
     FailingPrint fmp(mp, fail_on);
     COBSPrint p(fmp);
 
-    write_retry(p, "1234", 4);
+    write_retry(p, "1234");
     while(!p.end());
 
     TEST_ASSERT_EQUAL_STREAM("\x05""1234\x00", mp);
@@ -68,7 +67,7 @@ void test_cobs_interrupted0() {
     FailingPrint fmp(mp, fail_on);
     COBSPrint p(fmp);
 
-    write_retry(p, "12\x00""34", 5);
+    write_retry(p, "12\x00""34");
     while(!p.end());
 
     TEST_ASSERT_EQUAL_STREAM("\x03""12\x03""34\x00", mp);
@@ -84,7 +83,7 @@ void test_cobs_interrupted_many() {
         FailingPrint fmp(mp, fail_on);
         COBSPrint p(fmp);
 
-        write_retry(p, "1234", 4);
+        write_retry(p, "1234");
         while(!p.end());
 
         TEST_ASSERT_EQUAL_STREAM("\x05""1234\x00", mp);

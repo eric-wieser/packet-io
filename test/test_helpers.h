@@ -49,10 +49,18 @@ void AssertEqualStream(const char (&expected)[N],
 
 #define TEST_ASSERT_EQUAL_STREAM(expected, actual) AssertEqualStream((expected), (actual), (__LINE__))
 
-inline void write_retry(Print& p, const char* data, size_t n) {
+template<size_t N>
+inline size_t write(Print &p, const char (&data)[N]) {
+    return p.write(data, N-1);
+}
+
+template<size_t N>
+inline void write_retry(Print &p, const char (&data)[N]) {
+    size_t n = N - 1;
+    const char* datap = data;
     while(n) {
-        size_t amt = p.write(data, n);
+        size_t amt = p.write(datap, n);
         n -= amt;
-        data += amt;
+        datap += amt;
     }
 }
