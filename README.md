@@ -25,9 +25,9 @@ Implemented so far
 Examples
 --------
 
-Writing
-~~~~~~~
-```
+### Writing
+
+```c++
 // pick a protocol here - everything below doesn't need to change
 COBSPrint cobs_out(Serial);
 
@@ -47,9 +47,9 @@ else {
 }
 ```
 
-Reading
-~~~~~~~
-```
+### Reading
+
+```c++
 // pick a protocol here - everything below doesn't need to change
 COBSStream cobs_in(Serial);
 
