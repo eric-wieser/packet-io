@@ -2,7 +2,6 @@
 #define mock_print_h
 
 #include <stdint.h>
-
 #include "Print.h"
 #include "Stream.h"
 
@@ -10,13 +9,38 @@ class MockBuffer {
 public:
 	virtual const uint8_t* get_buffer() const = 0;
 	virtual uint8_t* get_buffer() = 0;
-	virtual size_t get_len() const = 0;
+	virtual size_t size() const = 0;
 	inline uint8_t operator[](size_t i) const {
 		return get_buffer()[i];
 	}
 	inline uint8_t& operator[](size_t i) {
 		return get_buffer()[i];
 	}
+};
+
+class MockSBuffer : public MockBuffer {
+private:
+	const uint8_t* _buffer;
+	const size_t _n;
+	virtual uint8_t* get_buffer() { return NULL; };
+	__attribute__((noreturn)) uint8_t& operator[](size_t i) { }
+public:
+	virtual const uint8_t* get_buffer() const { return _buffer; };
+	virtual size_t size() const { return _n; }
+	using MockBuffer::operator[];
+
+
+	// these should be const...
+	static const MockSBuffer of(const char* buffer, size_t n) {
+		return MockSBuffer((const uint8_t*) buffer, n);
+	}
+	template<size_t N>
+	static const MockSBuffer of(const char (&buffer)[N]) {
+		return MockSBuffer((const uint8_t*) buffer, N-1);
+	}
+	MockSBuffer(const uint8_t* buffer, size_t n) : _buffer(buffer), _n(n) { }
+	template<size_t N>
+	MockSBuffer(const char (&buffer)[N]) : _buffer((const uint8_t*) buffer), _n(N-1){ }
 };
 
 template<size_t N>
@@ -26,7 +50,13 @@ private:
 public:
 	virtual const uint8_t* get_buffer() const { return _buffer; };
 	virtual uint8_t* get_buffer() { return _buffer; };
-	virtual size_t get_len() const { return N; }
+	virtual size_t size() const { return N; }
+
+	MockABuffer() {}
+	MockABuffer(const char (&src)[N]) {
+		for(size_t i = 0; i < N; i++)
+			_buffer[i] = src[i];
+	}
 };
 
 class MockStream : public Stream {
@@ -36,22 +66,22 @@ private:
 public:
 	MockStream(const MockBuffer& src): _src(src) { }
 	virtual int peek() override {
-		if (_index < _src.get_len())
+		if (_index < _src.size())
 			return _src[_index];
 		else
 			return -1;
 	}
 	virtual int read() override {
-		if (_index < _src.get_len())
+		if (_index < _src.size())
 			return _src[_index++];
 		else
 			return -1;
 	}
 	virtual int available() override {
-		return _src.get_len() - _index;
+		return _src.size() - _index;
 	}
 	virtual void flush() override {
-		_index = _src.get_len();
+		_index = _src.size();
 	}
 
 private:
@@ -66,7 +96,7 @@ private:
 public:
 	MockPrint(MockBuffer& dest): _dest(dest) { }
 	virtual size_t write(uint8_t val) {
-		if(_len >= _dest.get_len()) return 0;
+		if(_len >= _dest.size()) return 0;
 		_dest[_len++] = val;
 		return 1;
 	}
@@ -85,7 +115,7 @@ public:
 	virtual uint8_t* get_buffer() override {
 		return _dest.get_buffer();
 	}
-	virtual size_t get_len() const override {
+	virtual size_t size() const override {
 		return _len;
 	}
 };

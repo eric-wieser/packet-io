@@ -20,7 +20,7 @@ void test_failing_mock_write() {
     FailingPrint fmp(mp, fail_on);
 
     TEST_ASSERT_EQUAL(0, fmp.write("01234"));
-    TEST_ASSERT_EQUAL(0, mp.get_len());
+    TEST_ASSERT_EQUAL(0, mp.size());
 
     TEST_ASSERT_EQUAL(2, fmp.write("1234"));
     TEST_ASSERT_EQUAL(1, fmp.write("4"));

@@ -6,7 +6,7 @@
 
 static MockABuffer<20> short_buf;
 
-void test_basic_read() {
+static void test_basic_read() {
     // test reading two sequential packets
     MockPrint mp(short_buf);
     MockStream ms(mp);
@@ -38,7 +38,7 @@ void test_basic_read() {
     TEST_ASSERT_EQUAL(COBSStream::EOF, s.read());
 }
 
-void test_piecewise_read() {
+static void test_piecewise_read() {
     // test reading a packet that is coming in piece by piece
     MockPrint mp(short_buf);
     MockStream ms(mp);
@@ -60,7 +60,31 @@ void test_piecewise_read() {
     TEST_ASSERT_EQUAL(COBSStream::EOP, s.read());
 }
 
-void test_basic_read_peek() {
+static void test_piecewise_read0() {
+    // test reading a packet that is coming in piece by piece
+    MockPrint mp(short_buf);
+    MockStream ms(mp);
+    COBSStream s(ms);
+
+    mp.write((uint8_t) 3);
+    TEST_ASSERT_EQUAL(COBSStream::EOF, s.read());
+    mp.write("12");
+    TEST_ASSERT_EQUAL('1', s.read());
+    TEST_ASSERT_EQUAL('2', s.read());
+    TEST_ASSERT_EQUAL(COBSStream::EOF, s.read());
+    mp.write((uint8_t) 3);
+    TEST_ASSERT_EQUAL(0, s.read());
+    TEST_ASSERT_EQUAL(COBSStream::EOF, s.read());
+    mp.write("34");
+    TEST_ASSERT_EQUAL('3', s.read());
+    TEST_ASSERT_EQUAL('4', s.read());
+    TEST_ASSERT_EQUAL(COBSStream::EOF, s.read());
+    TEST_ASSERT_EQUAL(COBSStream::EOF, s.read());
+    mp.write((uint8_t) 0);
+    TEST_ASSERT_EQUAL(COBSStream::EOP, s.read());
+}
+
+static void test_basic_read_peek() {
     // test peeking a packet as it is read
     MockPrint mp(short_buf);
     MockStream ms(short_buf);
@@ -131,6 +155,7 @@ void run_all_cobs_decode() {
     RUN_TEST(test_basic_read);
     RUN_TEST(test_basic_read_peek);
     RUN_TEST(test_piecewise_read);
+    RUN_TEST(test_piecewise_read0);
     RUN_TEST(test_confused_reader);
 }
 

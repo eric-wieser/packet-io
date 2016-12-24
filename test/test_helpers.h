@@ -11,22 +11,17 @@ inline void DumpStream(const uint8_t* buf, size_t n) {
 }
 
 inline void DumpStream(const MockBuffer& s) {
-    DumpStream(s.get_buffer(), s.get_len());
+    DumpStream(s.get_buffer(), s.size());
 }
 
-template<int N>
-void DumpStream(const char (&s)[N]) {
-    DumpStream((const uint8_t*)s, N-1);
-}
 
-template<int N>
-void AssertEqualStream(const char (&expected)[N],
-                       const MockBuffer& actual,
-                       const UNITY_LINE_TYPE lineNumber)
+inline void AssertEqualStream(const MockBuffer& expected,
+                              const MockBuffer& actual,
+                              const UNITY_LINE_TYPE lineNumber)
 {
-    size_t         le = N - 1;
-    const uint8_t* be = (const uint8_t*) expected;
-    size_t         la = actual.get_len();
+    size_t         le = expected.size();
+    const uint8_t* be = expected.get_buffer();
+    size_t         la = actual.size();
     const uint8_t* ba = actual.get_buffer();
 
     bool match = false;
@@ -45,6 +40,22 @@ void AssertEqualStream(const char (&expected)[N],
         UNITY_OUTPUT_CHAR('\n');
         UNITY_TEST_FAIL(lineNumber, "Streams do not match");
     }
+}
+
+template<int N>
+void DumpStream(const char (&s)[N]) {
+    DumpStream(MockSBuffer::of(s));
+}
+
+template<size_t N>
+void AssertEqualStream(const char (&expected)[N],
+                       const MockBuffer& actual,
+                       const UNITY_LINE_TYPE lineNumber) {
+    return AssertEqualStream(
+        MockSBuffer::of(expected),
+        actual,
+        lineNumber
+    );
 }
 
 #define TEST_ASSERT_EQUAL_STREAM(expected, actual) AssertEqualStream((expected), (actual), (__LINE__))
