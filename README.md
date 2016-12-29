@@ -18,7 +18,7 @@ Framing Protocols
 Implemented so far
 
 * [x] COBS
-* [ ] SLIPS
+* [x] SLIPS
 * [ ] COBS-R
 * [ ] Length-prefixed
 

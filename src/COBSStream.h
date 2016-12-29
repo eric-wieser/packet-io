@@ -1,6 +1,6 @@
 #pragma once
 
-#include "PacketIO.h"
+#include "packet_interfaces.h"
 
 namespace packetio {
 
