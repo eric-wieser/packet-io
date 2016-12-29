@@ -5,6 +5,8 @@
 #include "COBSStream.h"
 #include "COBSPrint.h"
 
+using namespace packetio;
+
 static MockABuffer<1024> long_buf;
 static MockABuffer<1024> long_buf2;
 

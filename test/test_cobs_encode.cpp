@@ -4,6 +4,8 @@
 #include "mock_print.h"
 #include "COBSPrint.h"
 
+using namespace packetio;
+
 static MockABuffer<20> short_buf;
 
 static void test_cobs_basic(void) {

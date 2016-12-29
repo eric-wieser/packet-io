@@ -4,6 +4,8 @@
 #include "mock_print.h"
 #include "COBSStream.h"
 
+using namespace packetio;
+
 static MockABuffer<20> short_buf;
 
 static void test_basic_read() {

@@ -4,6 +4,8 @@
 #include "Stream.h"
 #undef EOF
 
+namespace packetio {
+
 class PacketPrint : public Print {
 public:
     // complete the current packet
@@ -21,3 +23,5 @@ public:
     static const int EOF = -1;
     static const int EOP = -2;
 };
+
+}

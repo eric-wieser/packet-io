@@ -2,6 +2,8 @@
 
 #include "PacketIO.h"
 
+namespace packetio {
+
 class COBSPrint : public PacketPrint
 {
 private:
@@ -138,3 +140,5 @@ public:
         }
     }
 };
+
+}

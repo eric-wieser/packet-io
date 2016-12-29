@@ -2,6 +2,8 @@
 
 #include "PacketIO.h"
 
+namespace packetio {
+
 class COBSStream : public PacketStream
 {
 private:
@@ -150,3 +152,5 @@ private:
     size_t write(uint8_t) override { return 0; }
     size_t write(const uint8_t*, size_t) override { return 0; }
 };
+
+}
