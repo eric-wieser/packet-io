@@ -6,6 +6,7 @@ extern void run_all_mocks();
 extern void run_all_cobs_encode();
 extern void run_all_cobs_decode();
 extern void run_all_cobs_roundtrip();
+extern void run_all_handler();
 
 void run_all_tests() {
     UNITY_BEGIN();
@@ -14,6 +15,7 @@ void run_all_tests() {
     run_all_cobs_encode();
     run_all_cobs_decode();
     run_all_cobs_roundtrip();
+    run_all_handler();
 
     UNITY_END();
 }
