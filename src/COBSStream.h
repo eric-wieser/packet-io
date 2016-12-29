@@ -7,18 +7,20 @@ class COBSStream : public PacketStream
 private:
     Stream& _base;
 
-    uint8_t _counter;       // the count of the current chunk
-    uint8_t _chunk_index;
+    uint8_t _chunk_len;   // the number of bytes in the current chunk
+    uint8_t _chunk_index; // the index of the next byte to read in the chunk
 
-    bool _packet_done;
-    bool _packet_valid;
-    bool _skip_to_end;
+    bool _packet_done;    // true when we reach a zero
+    bool _packet_valid;   // true if the zero was reached in a valid location
+    bool _skip_to_end;    // true if we want to ignore all bytes between now and
+                          // the next packet start
 
-    // true if the chunk starting is not due to a zero
+    // true if the chunk starting is not due to a zero - either the start of a
+    // new packet, or the chunk that follows a 255-chunk
     bool _next_marker_is_dummy;
 
     bool _packet_can_end_here() {
-        return !_next_marker_is_dummy && _chunk_index == _counter;
+        return !_next_marker_is_dummy && _chunk_index == _chunk_len;
     }
 
     void _reset() {
@@ -27,7 +29,7 @@ private:
         _packet_valid = false;
         _next_marker_is_dummy = true;
 
-        _counter = _chunk_index = 0;
+        _chunk_len = _chunk_index = 0;
     }
 
     int _read() {
@@ -51,8 +53,6 @@ private:
             return EOF;
         }
         else if(c == 0) {
-            _packet_done = true;
-            _packet_valid = _packet_can_end_here();
             return EOP;
         }
         else {
@@ -61,18 +61,18 @@ private:
     }
 
     int _update_count() {
-        while(_chunk_index == _counter) {
+        while(_chunk_index == _chunk_len) {
             // try and read the new counter
             int c = _read();
             if(c < 0) return c;
 
-            _counter = c;
+            _chunk_len = c;
 
             // decide whether to start the chunk by emitting a zero
             _chunk_index = _next_marker_is_dummy ? 1 : 0;
 
             // and whether the next chunk should also emit a zero
-            _next_marker_is_dummy = _counter == 0xFF;
+            _next_marker_is_dummy = _chunk_len == 0xFF;
         }
         return 0;
     }
@@ -135,7 +135,7 @@ public:
         int stat = _update_count();
         if(stat < 0) return 0;
 
-        return (_counter - _chunk_index);
+        return (_chunk_len - _chunk_index);
     }
 
     virtual bool next() {
@@ -146,6 +146,7 @@ public:
         return true;
     }
 private:
-    size_t write(uint8_t) { return 0; }
-    size_t write(const uint8_t*, size_t) { return 0; }
+    // this isn't readable and writable!
+    size_t write(uint8_t) override { return 0; }
+    size_t write(const uint8_t*, size_t) override { return 0; }
 };
