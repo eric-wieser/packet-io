@@ -121,7 +121,7 @@ public:
     }
 
     virtual int available() override {
-        if(_packet_done) return 0;
+        if(_packet_done) return 1;  // TODO: test
 
         // consume the next character if it is an escape
         peek();

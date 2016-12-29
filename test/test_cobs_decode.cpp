@@ -127,7 +127,7 @@ static void test_confused_reader() {
     TEST_ASSERT_EQUAL('1', s.read());
     TEST_ASSERT_EQUAL('2', s.read());
     TEST_ASSERT_EQUAL('3', s.read());
-    TEST_ASSERT_EQUAL(1, s.available());
+    TEST_ASSERT_EQUAL(2, s.available());
     s.next();
     TEST_ASSERT_EQUAL(COBSStream::EOF, s.read());
     TEST_ASSERT_EQUAL(0, s.available());
@@ -138,7 +138,7 @@ static void test_confused_reader() {
     mp.write((uint8_t) 0);
 
     // read only 1/4
-    TEST_ASSERT_EQUAL(4, s.available());
+    TEST_ASSERT_EQUAL(5, s.available());
     TEST_ASSERT_EQUAL('5', s.read());
     s.next();
     TEST_ASSERT_EQUAL(COBSStream::EOF, s.read());

@@ -132,12 +132,14 @@ public:
     }
 
     virtual int available() override {
-        if(_packet_done) return 0;
-
         int stat = _update_count();
+        if(_packet_done) return 1;
         if(stat < 0) return 0;
 
-        return (_chunk_len - _chunk_index);
+        int actual = _base.available();
+        int to_chunk_end = (_chunk_len - _chunk_index) + 1;
+
+        return to_chunk_end > actual ? actual : to_chunk_end;
     }
 
     virtual bool next() {
