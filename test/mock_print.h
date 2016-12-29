@@ -2,8 +2,8 @@
 #define mock_print_h
 
 #include <stdint.h>
-#include "Print.h"
-#include "Stream.h"
+#include "_compat/Print.h"
+#include "_compat/Stream.h"
 
 class MockBuffer {
 public:

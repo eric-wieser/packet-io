@@ -2,7 +2,7 @@
 
 #include "test_helpers.h"
 #include "mock_print.h"
-#include "COBSStream.h"
+#include "cobs/Stream.h"
 
 using namespace packetio;
 

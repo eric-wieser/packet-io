@@ -2,7 +2,7 @@
 
 #include "test_helpers.h"
 #include "mock_print.h"
-#include "COBSPrint.h"
+#include "cobs/Print.h"
 
 using namespace packetio;
 

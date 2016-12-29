@@ -50,11 +50,11 @@ static void test_long() { test_one("Hello\0World\0" REP(2,5,5,"A")); }
 static void test_long0() { test_one("Hello\0World\0" REP(2,5,5,"A") "\0"); }
 };
 
-#include "COBSStream.h"
-#include "COBSPrint.h"
-#include "EscapedStream.h"
-#include "EscapedPrint.h"
-#include "escaped_defs.h"
+#include "cobs/Stream.h"
+#include "cobs/Print.h"
+#include "escaped/Stream.h"
+#include "escaped/Print.h"
+#include "escaped/codes.h"
 
 using namespace packetio;
 

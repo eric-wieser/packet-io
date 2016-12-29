@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Print.h"
-#include "Stream.h"
+#include "_compat/Print.h"
+#include "_compat/Stream.h"
 #undef EOF
 
 namespace packetio {
