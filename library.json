@@ -1,7 +1,7 @@
 {
   "name": "PacketIO",
   "description": "Packetizing wrapper for arduino Streams",
-  "keywords": "Print, Stream, packet, COBS, framing",
+  "keywords": "Print, Stream, packet, framing, COBS, SLIP",
   "authors":
   {
     "name": "Eric Wieser"
