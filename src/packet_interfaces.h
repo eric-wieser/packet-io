@@ -6,10 +6,19 @@
 
 namespace packetio {
 
+/*!
+    @brief Augments arduino's Print to add knowledge of packets
+
+    Acts like a new Print for each packet. To stop printing to the current
+    packet, and send new prints to the next one, call :func:end
+
+    This only concerns itself with the read parts of stream, and should not be
+    used for writing.
+*/
 class PacketPrint : public Print {
 public:
     /*!
-        @brief End the current packet
+        @brief  End the current packet
         @return true if successful
     */
     virtual bool end() = 0;
@@ -18,8 +27,39 @@ public:
         @brief Abort the current packet, preferably invalidating it if possible
     */
     virtual void abort() = 0;
+
+    /*!
+        @overload virtual size_t write(uint8_t val)
+        @brief  Write a single byte to the current packet.
+        @param  val the byte to encode
+        @return The number of un-encoded bytes written - 1 on success, 0 on
+                failure
+    */
+    // virtual size_t write(uint8_t val) override = 0;
+
+    /*!
+        @overload virtual size_t PacketPrint::write(const uint8_t* buffer, size_t size)
+        @brief    Write a collection of bytes to the current packet. If the return
+                  value is not equal to `size`, then the write can be safely
+                  continued with `write(buffer + ret, size-ret)`
+        @param    buffer  the bytes to encode
+        @param    size    the number of bytes
+        @return   The number of un-encoded bytes written
+    */
+
 };
 
+
+/*!
+    @brief Augments arduino's Stream to add knowledge of packets
+
+    Acts like a new stream for each packet, but instead of returning EOF when
+    the packet is over, it returns EOP. EOF is returned when there is nothing
+    to read, but the packet is not complete.
+
+    This only concerns itself with the read parts of stream, and should not be
+    used for writing.
+*/
 class PacketStream : public Stream {
 public:
 

@@ -34,7 +34,7 @@ static void test_handler_basic() {
         const MockSBuffer expected = messages[received++];
         TEST_ASSERT_EQUAL_STREAM(expected, MockSBuffer(data, len));
     };
-    handler.onMessage(onMessage);
+    handler.onMessage(&onMessage);
     handler.update();
     TEST_ASSERT_EQUAL_MESSAGE(sent, received, "Nothing ran");
 

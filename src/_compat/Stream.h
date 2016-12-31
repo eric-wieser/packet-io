@@ -11,6 +11,11 @@
 
   #include <string.h>
   #include "Print.h"
+  /**
+   * @brief      Lightweight mirror of the arduino
+   *             <a href="https://www.arduino.cc/en/Reference/Stream">Stream</a>
+   *             class, for use on other platforms
+   */
   class Stream : Print
   {
     protected:

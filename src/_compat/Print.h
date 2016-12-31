@@ -4,6 +4,9 @@
   #ifndef Print_H
   #define Print_H
   #include <string.h>
+  /**
+   * @brief      Lightweight mirror of the (undocumented) arduino Print class, for use on other platforms
+   */
   class Print
   {
     public:

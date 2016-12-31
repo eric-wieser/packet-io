@@ -6,9 +6,14 @@
 
 namespace packetio {
 
-// A wrapper for a lambda function, that works with captured variables
-template<typename LambdaType> class Handler {};
-template<typename Out, typename ...In> class Handler<Out(In...)> {
+template<typename LambdaType> class LambdaPointer {};
+/**
+ * @brief      A wrapper for storing a pointer to a lambda function, that works with captured variables
+ *
+ * @tparam     Out   lambda return type
+ * @tparam     In    lambda argument types
+ */
+template<typename Out, typename ...In> class LambdaPointer<Out(In...)> {
     Out (*function)(void *, In...);
     void *context;
 
@@ -16,21 +21,35 @@ template<typename Out, typename ...In> class Handler<Out(In...)> {
         return ((Out (*)(In...))context)(arguments...);
     }
 public:
-    Handler(Out (*fptr)(In...)) {
+    /**
+     * @brief      Create a LambdaPointer from a raw function pointer
+     *
+     * @param[in]  fptr  The context-less function
+     */
+    LambdaPointer(Out (*fptr)(In...)) {
         context = reinterpret_cast<void*>(fptr);
         function = _no_context_handler;
     }
+    /**
+     * @brief      Create a LambdaPointer from a lambda, possibly with captures
+     *
+     * @param      lambda  A pointer to the lambda function. Because this a
+     *                     pointer, this must be allocated on the stack.
+     */
     template <typename T>
-    Handler(T &lambda) {
-        context = static_cast<void*>(&lambda);
+    LambdaPointer(T *lambda) {
+        context = static_cast<void*>(lambda);
         function = [](void *context, In... arguments) {
             return ((T *)context)->operator()(arguments...);
         };
     }
+    //! Invoke the underlying function
     Out operator()(In ... in)
     {
       return function(context, in...);
     }
+
+    //! Determine if the reference has been initialized
     operator bool() {
         return context != nullptr;
     }
@@ -43,8 +62,8 @@ public:
         Overflow,
         Framing
     };
-    typedef Handler<void(uint8_t*, size_t, Error)> ErrorHandler;
-    typedef Handler<void(uint8_t*, size_t)> MessageHandler;
+    typedef LambdaPointer<void(uint8_t*, size_t, Error)> ErrorHandler;
+    typedef LambdaPointer<void(uint8_t*, size_t)> MessageHandler;
 
 private:
     PacketStream& _base;
@@ -61,8 +80,16 @@ private:
         if(_errorHandler) _errorHandler(message, len, e);
     }
 public:
+    /**
+     * @brief      Construct a listener for the given packet stream
+     */
     PacketListener_(PacketStream& base) : _base(base) {}
 
+    /**
+     * @brief      Read as much as possible from the underlying stream.
+     *             If new packets are completed or errors occur, invoke the
+     *             appropriate handler
+     */
     void update() {
         int a = 0;
         while((a = _base.available()) > 0) {
@@ -88,15 +115,36 @@ public:
         }
     }
 
+    /**
+     * @brief      Set the handler to invoke when a message is recieved
+     *
+     * @param[in]  handler  The handler to invoke. This will be called with the
+     *                      pointer to the start of the message, and its length.
+     *
+     * Note that because this is a LambdaPointer, the lambda function must have
+     * been allocated on the stack, such that its lifetime exceeds that of this
+     * object.
+     */
     void onMessage(MessageHandler handler) {
         _messageHandler = handler;
     }
 
+    /**
+     * @brief      Set the handler to invoke when an error occurs
+     *
+     * @param[in]  handler  The handler to invoke. This will be called with the
+     *                      pointer to the start of the message, and its length.
+     *
+     * Note that because this is a LambdaPointer, the lambda function must have
+     * been allocated on the stack, such that its lifetime exceeds that of this
+     * object.
+     */
     void onError(ErrorHandler handler) {
         _errorHandler = handler;
     }
 };
 
+//! Convenience typedef for a PacketListener with a buffer size of 256
 typedef PacketListener_<> PacketListener;
 
 }
