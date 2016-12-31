@@ -142,12 +142,11 @@ public:
         return to_chunk_end > actual ? actual : to_chunk_end;
     }
 
-    virtual bool next() {
+    virtual void next() {
         if(_packet_done)
             _reset();
         else
             _skip_to_end = true;
-        return true;
     }
 private:
     // this isn't readable and writable!

@@ -132,12 +132,11 @@ public:
         return (n + 1) / 2;
     }
 
-    virtual bool next() {
+    virtual void next() {
         if(_packet_done)
             _reset();
         else
             _skip_to_end = true;
-        return true;
     }
 private:
     // this isn't readable and writable!
