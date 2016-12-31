@@ -1,0 +1,2 @@
+# breathe master is currently broken
+-e git://github.com/eric-wieser/breathe.git#egg=breathe-master
