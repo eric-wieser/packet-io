@@ -55,12 +55,18 @@ public:
     }
 };
 
+/**
+ * @brief      Class for listening for packets on a PacketStream
+ *
+ * @tparam     BufferSize  The size of the buffer to allocate for incoming packets
+ */
 template<size_t BufferSize = 256>
 class PacketListener_ {
 public:
+    //! Types of error that can occur when receiving a packet
     enum class Error {
-        Overflow,
-        Framing
+        Overflow,  //!< The end of the message could not be recieved because the buffer overflowed
+        Framing    //!< The message was framed incorrectly
     };
     typedef LambdaPointer<void(uint8_t*, size_t, Error)> ErrorHandler;
     typedef LambdaPointer<void(uint8_t*, size_t)> MessageHandler;
@@ -144,7 +150,7 @@ public:
     }
 };
 
-//! Convenience typedef for a PacketListener with a buffer size of 256
+//! Convenience typedef for a PacketListener with a sensible buffer size
 typedef PacketListener_<> PacketListener;
 
 }

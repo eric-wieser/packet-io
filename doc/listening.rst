@@ -1,6 +1,8 @@
 Listening for packets
 =====================
 
+.. doxygentypedef:: packetio::PacketListener
+
 .. doxygenclass:: packetio::PacketListener_
     :members:
     :undoc-members:
