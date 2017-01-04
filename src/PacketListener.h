@@ -2,8 +2,6 @@
 
 #include "packet_interfaces.h"
 
-#include "../test/test_helpers.h"
-
 namespace packetio {
 
 template<typename LambdaType> class LambdaPointer {};
