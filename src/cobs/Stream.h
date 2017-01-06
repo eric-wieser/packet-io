@@ -63,6 +63,8 @@ private:
     }
 
     int _update_count() {
+        if(_packet_done) return EOP;
+
         while(_chunk_index == _chunk_len) {
             // try and read the new counter
             int c = _read();
@@ -92,9 +94,6 @@ public:
             if(c == 0) _reset();
         }
 
-        if(_packet_done) return EOP;
-
-
         // update the counter field if we don't have one
         int stat = _update_count();
         if(stat < 0) return stat;
@@ -113,7 +112,6 @@ public:
     }
 
     virtual int peek() override {
-        if(_packet_done) return EOP;
 
         // update the counter field if we don't have one
         int stat = _update_count();
