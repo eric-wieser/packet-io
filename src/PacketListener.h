@@ -20,15 +20,6 @@ template<typename Out, typename ...In> class LambdaPointer<Out(In...)> {
     }
 public:
     /**
-     * @brief      Create a LambdaPointer from a raw function pointer
-     *
-     * @param[in]  fptr  The context-less function
-     */
-    LambdaPointer(Out (*fptr)(In...)) {
-        context = reinterpret_cast<void*>(fptr);
-        function = _no_context_handler;
-    }
-    /**
      * @brief      Create a LambdaPointer from a lambda, possibly with captures
      *
      * @param      lambda  A pointer to the lambda function. Because this a
@@ -41,6 +32,18 @@ public:
             return ((T *)context)->operator()(arguments...);
         };
     }
+    /**
+     * @brief      Create a LambdaPointer from a raw function pointer
+     *
+     * @param[in]  fptr  The context-less function
+     */
+    LambdaPointer(Out (*fptr)(In...)) {
+        context = reinterpret_cast<void*>(fptr);
+        function = _no_context_handler;
+    }
+
+    LambdaPointer() : context(nullptr) {}
+
     //! Invoke the underlying function
     Out operator()(In ... in)
     {
