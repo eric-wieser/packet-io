@@ -1,4 +1,4 @@
-PacketIO
+PacketIO [![documentation](https://readthedocs.org/projects/packetio/badge?version=latest)](http://packetio.readthedocs.org)
 ========
 
 A PlatformIO library for framing packets sent or received over an arduino `Stream`, such as `Serial`.
