@@ -8,7 +8,7 @@ COBSPrint cobs_out(Serial);
 COBSStream cobs_in(Serial);
 
 void setup() {
-    Serial.begin();
+    Serial.begin(9600);
 }
 
 void loop() {
