@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <packet_interfaces.h>
 #include <cobs/Stream.h>
 #include <cobs/Print.h>
 using namespace packetio;
