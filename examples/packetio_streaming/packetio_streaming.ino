@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <packet_interfaces.h>
 #include <cobs/Stream.h>
 #include <cobs/Print.h>
 using namespace packetio;
@@ -7,7 +8,7 @@ COBSPrint cobs_out(Serial);
 COBSStream cobs_in(Serial);
 
 void setup() {
-    Serial.begin();
+    Serial.begin(9600);
 }
 
 void loop() {
