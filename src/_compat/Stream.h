@@ -16,7 +16,7 @@
    *             <a href="https://www.arduino.cc/en/Reference/Stream">Stream</a>
    *             class, for use on other platforms
    */
-  class Stream : Print
+  class Stream : public Print
   {
     protected:
       unsigned long _timeout;      // number of milliseconds to wait for the next char before aborting timed read
