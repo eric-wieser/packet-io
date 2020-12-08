@@ -122,6 +122,18 @@ static void test_cobs_long() {
 
 }
 
+static void test_cobs_abort(void) {
+    MockPrint mp(short_buf);
+    COBSPrint p(mp);
+
+    TEST_ASSERT_EQUAL(4, p.write("1234"));
+    p.abort();
+    TEST_ASSERT_EQUAL(4, p.write("5678"));
+    TEST_ASSERT(p.end());
+
+    TEST_ASSERT_EQUAL_STREAM("\x02\x00\x05""5678\x00", mp);
+}
+
 void run_all_cobs_encode() {
     RUN_TEST(test_cobs_basic);
     RUN_TEST(test_cobs_basic0);
@@ -131,6 +143,7 @@ void run_all_cobs_encode() {
     RUN_TEST(test_cobs_interrupted0);
     RUN_TEST(test_cobs_interrupted_many);
     RUN_TEST(test_cobs_long);
+    RUN_TEST(test_cobs_abort);
 }
 
 #endif
