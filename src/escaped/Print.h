@@ -103,6 +103,10 @@ public:
             // we already sent ESC
             _base.write((uint8_t) EscapeCodes::END);
         }
+        reset();
+    }
+
+    virtual void reset() override {
         _pending_escape = -1;
     }
 };

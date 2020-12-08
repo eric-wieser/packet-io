@@ -137,6 +137,10 @@ public:
             _base.write((uint8_t) 0);
         }
 
+        reset();
+    }
+
+    virtual void reset() override {
         // reset leftover buffer
         _written_upto = SIZE_MAX;
         // begin the next packet
