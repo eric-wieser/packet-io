@@ -29,6 +29,12 @@ public:
     virtual void abort() = 0;
 
     /*!
+        @brief Reset any internal state to allow a new packet to be started
+        without ending the current packet.
+    */
+    virtual void reset() = 0;
+
+    /*!
         @overload virtual size_t write(uint8_t val)
         @brief  Write a single byte to the current packet.
         @param  val the byte to encode

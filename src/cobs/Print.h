@@ -126,8 +126,6 @@ public:
     }
 
     virtual void abort() override {
-        _counter = 0;
-
         // mid-chunk - sending a 0 is illegal
         if(_written_upto != SIZE_MAX) {
             _base.write((uint8_t) 0);
@@ -138,6 +136,15 @@ public:
             _base.write((uint8_t) 2);
             _base.write((uint8_t) 0);
         }
+
+        reset();
+    }
+
+    virtual void reset() override {
+        // reset leftover buffer
+        _written_upto = SIZE_MAX;
+        // begin the next packet
+        _counter = 1;
     }
 };
 
